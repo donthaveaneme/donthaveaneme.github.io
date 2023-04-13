@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>App</title>
+
+        <link rel="manifest" href="manifest.json">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#FFDE4B">
+        <script>
+            if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+            }
+            </script>
+ </head>   
+    
+<style>
+
+    body{
+        font-family: Quicksand, sans-serif;
+        font-weight: normal;
+        font-size: 14px;
+        letter-spacing: 0px;
+    }
+
+    h1{
+        font-weight: bold;
+        line-height: 0.5em;
+
+
+        display: flex; 
+        justify-content: left;
+        align-items: left;
+        margin-left: 10%;
+        margin-top: 90px;
+
+    }
+
+    h2{ 
+        font-weight: lighter;
+        margin-left: 10%;
+        margin-top: -9px;
+        
+        font-size: 20px;
+        
+    }
+
+    p{
+        font-family: Nunito, sans-serif;
+    }
+
+    footer {
+            position: fixed;
+            bottom: 0;
+            width: 105%;
+            height: 5em;
+            background-color: whitesmoke;
+
+            margin-left: -10px;
+            padding: 0 0 0 50px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+          footer p {
+            font-size: 14px;
+        }
+
+
+</style>
+
+<body>
+        <h1>Selamat datang!</h1>
+        <h2>di Member Point dari Ina Baby & Kids</h2>
+
+    
+  <footer>
+    <div class="container">
+      <p>© 2023 Ina Baby & Kids.</p>
+    </div>
+</body>
+
+</html>
