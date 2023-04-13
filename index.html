@@ -56,7 +56,33 @@
         font-family: Nunito, sans-serif;
     }
 
-    footer {
+    p:nth-of-type(2){
+            font-family: Quicksand, sans-serif;
+            font-weight: normal;
+        }
+
+    .rectangle{
+        width: 200px;
+		height: 100px;
+		background-color: #e4e4e4;
+		border: 2px solid black;
+		border-radius: 25px;
+    }
+
+    .default-margin{
+        margin-left: 90px;
+        margin-top: 90px;
+    }
+
+    .textbox-position{
+            font-size: 20px;
+
+            display: flex;
+            padding-left: 25px;
+            padding-top: auto;
+        }
+
+        footer {
             position: fixed;
             bottom: 0;
             width: 105%;
@@ -71,7 +97,7 @@
             align-items: center;
         }
     
-          footer p {
+        footer p {
             font-size: 14px;
         }
 
@@ -81,6 +107,19 @@
 <body>
         <h1>Selamat datang!</h1>
         <h2>di Member Point dari Ina Baby & Kids</h2>
+
+        
+        <div class="default-margin" style="margin-top: 30px; margin-left: 10%;">
+            <div class="rectangle" style="width: 90%;border: 0px; background-color: #FFDE4B;">
+                <div class="textbox-position" style="font-size: 18px; padding-top: 15px;">
+                    <p2>Poin kamu</p2>
+                </div>
+                <div class="textbox-position" style="font-weight: bold;">
+                    <p>100</p>
+                </div>  
+            </div>
+            </div>
+            
 
     
   <footer>
