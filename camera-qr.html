@@ -19,7 +19,6 @@
     </header>
 
     <main class="container mx-auto px-6 pb-24 mb-0 w-full">
-
         <div class="w-full h-full max-w-md max-h-screen bg-gray-800 flex items-center justify-center">
             <p class="fixed top-20 text-sm font-medium text-black text-center z-10 shadow-sm">
                 Arahkan barcode ke dalam kotak
@@ -33,7 +32,6 @@
             </div>
         </div>
     
-        <!-- Implikasi CDN untuk html5-qrcode -->
         <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
     
         <script>
@@ -52,35 +50,30 @@
                     // Pastikan video benar-benar siap untuk diputar
                     videoElement.onloadedmetadata = () => {
                         videoElement.play();
+                        
+                        // Menginisialisasi pemindaian QR Code dengan html5-qrcode
+                        const html5QrCode = new Html5Qrcode("camera-stream");
     
-                        // Tunggu sampai skrip html5-qrcode.js terload sebelum menginisialisasi Html5Qrcode
-                        if (typeof Html5Qrcode !== 'undefined') {
-                            // Menginisialisasi pemindaian QR Code dengan html5-qrcode
-                            const html5QrCode = new Html5Qrcode("camera-stream");
-    
-                            // Fungsi untuk menangani hasil pemindaian QR Code
-                            function onScanSuccess(decodedText, decodedResult) {
-                                console.log(`QR Code detected: ${decodedText}`);
-                                // Anda bisa melakukan sesuatu dengan hasil QR code seperti redirect atau proses data lebih lanjut
-                            }
-    
-                            // Fungsi untuk menangani kesalahan pemindaian
-                            function onScanFailure(error) {
-                                console.warn(`Scan failed: ${error}`);
-                            }
-    
-                            // Mulai pemindaian QR Code setelah kamera siap
-                            html5QrCode.start(
-                                { facingMode: "environment" },  // Menggunakan kamera belakang
-                                { fps: 10, qrbox: 250 },        // FPS dan ukuran box untuk pemindaian
-                                onScanSuccess,
-                                onScanFailure
-                            ).catch((err) => {
-                                console.error("Error starting QR scanner: " + err);
-                            });
-                        } else {
-                            console.error('Html5Qrcode is not defined!');
+                        // Fungsi untuk menangani hasil pemindaian QR Code
+                        function onScanSuccess(decodedText, decodedResult) {
+                            console.log(`QR Code detected: ${decodedText}`);
+                            // Anda bisa melakukan sesuatu dengan hasil QR code seperti redirect atau proses data lebih lanjut
                         }
+    
+                        // Fungsi untuk menangani kesalahan pemindaian
+                        function onScanFailure(error) {
+                            console.warn(`Scan failed: ${error}`);
+                        }
+    
+                        // Mulai pemindaian QR Code setelah kamera siap
+                        html5QrCode.start(
+                            { facingMode: "environment" },  // Menggunakan kamera belakang
+                            { fps: 10, qrbox: 250 },        // FPS dan ukuran box untuk pemindaian
+                            onScanSuccess,
+                            onScanFailure
+                        ).catch((err) => {
+                            console.error("Error starting QR scanner: " + err);
+                        });
                     };
                 } catch (error) {
                     console.error("Tidak dapat mengakses kamera. Periksa izin atau perangkat Anda.");
@@ -89,15 +82,10 @@
             }
     
             // Menjalankan fungsi startCamera setelah halaman dimuat sepenuhnya
-            window.onload = function() {
-                // Pastikan skrip html5-qrcode.min.js sudah dimuat dengan benar
-                const script = document.querySelector("script[src='https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js']");
-                script.onload = startCamera; // Menjalankan startCamera setelah skrip selesai dimuat
-            };
+            window.onload = startCamera;
         </script>
-    
     </main>
-    
+        
     
     
     <footer class="bg-white text-black p-2 fixed bottom-0 left-0 w-full z-10 border-t border-gray-300">
