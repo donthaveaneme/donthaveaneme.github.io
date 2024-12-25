@@ -3,8 +3,9 @@ module.exports = {
   darkMode: 'selector',
 
   content: [
-    "./src/**/*.{html,js}",
     "./index.html",
+    "./point.html",   // Tambahkan file baru di sini jika perlu
+    "./**/*.html",    // Ini akan mencakup semua file HTML di subfolder
   ],
   theme: {
     extend: {
