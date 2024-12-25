@@ -7,3 +7,22 @@
 body {
     font-family: 'Quicksand' sans-serif;
 }
+
+input{
+    border: 1px solid lightgray;
+    padding: 10px;
+    font-weight: 700;
+}
+
+input:hover, input:focus{
+    border: 1px solid blue;
+    box-shadow: 0 0 2px blue;
+    outline: none;
+
+    transition: all 150ms ease;
+}
+
+input[type="checkbox"]:hover{
+    border: 0;
+    box-shadow: none;
+}
