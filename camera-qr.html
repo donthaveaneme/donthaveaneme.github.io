@@ -19,70 +19,58 @@
     </header>
 
     <main class="container mx-auto px-6 pb-24 mb-0 w-full">
-        <div class="w-full h-full max-w-md max-h-screen bg-gray-800 flex items-center justify-center">
-            <p class="fixed top-20 text-sm font-medium text-black text-center z-10 shadow-sm">
+        <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+            <p id="message-scan" class="fixed top-20 text-sm font-medium text-white text-center z-10">
                 Arahkan barcode ke dalam kotak
                 <br>
                 Scan barcode hanya jika ditunjukkan kasir
             </p>
             
-            <video id="camera-stream" class="absolute inset-0 w-full h-full object-cover" autoplay></video>
-    
-            <div class="border-4 border-white rounded-lg fixed" style="width: 200px; height: 200px; top: 250px;">
-            </div>
+            <div id="reader" class="bg-white fixed top-0 w-full"></div>
+            <div id="result" class="bg-green-500 text-white font-medium top-0 w-full h-full flex-col justify-center items-center" style="display: none;"></div>
+
         </div>
     
-        <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
         <script>
-            // Elemen video untuk menampilkan stream kamera
-            const videoElement = document.getElementById("camera-stream");
+
+const scanner = new Html5QrcodeScanner('reader', { 
+        // Scanner will be initialized in DOM inside element with id of 'reader'
+        qrbox: {
+            width: 250,
+            height: 250,
+        },  // Sets dimensions of scanning box (set relative to reader element width)
+        fps: 30, // Frames per second to attempt a scan
+    });
+
+
+    scanner.render(success, error);
+    // Starts scanner
+
+    function success(result) {
+        document.getElementById('result').style.display = "flex";
+        document.getElementById('result').innerHTML = `
+        <h2>Success!</h2>
+        <p><a href="${result}">${result}</a></p>
+        `;
+        // Prints result as a link inside result element
+
+        scanner.clear();
+        // Clears scanning instance
+
+        document.getElementById('reader').remove();
+        document.getElementById('message-scan').remove();
+        // Removes reader element from DOM since no longer needed
     
-            // Fungsi untuk memulai kamera
-            async function startCamera() {
-                try {
-                    // Meminta izin untuk mengakses kamera
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-    
-                    // Menyambungkan stream ke elemen video
-                    videoElement.srcObject = stream;
-    
-                    // Pastikan video benar-benar siap untuk diputar
-                    videoElement.onloadedmetadata = () => {
-                        videoElement.play();
-                        
-                        // Menginisialisasi pemindaian QR Code dengan html5-qrcode
-                        const html5QrCode = new Html5Qrcode("camera-stream");
-    
-                        // Fungsi untuk menangani hasil pemindaian QR Code
-                        function onScanSuccess(decodedText, decodedResult) {
-                            console.log(`QR Code detected: ${decodedText}`);
-                            // Anda bisa melakukan sesuatu dengan hasil QR code seperti redirect atau proses data lebih lanjut
-                        }
-    
-                        // Fungsi untuk menangani kesalahan pemindaian
-                        function onScanFailure(error) {
-                            console.warn(`Scan failed: ${error}`);
-                        }
-    
-                        // Mulai pemindaian QR Code setelah kamera siap
-                        html5QrCode.start(
-                            { facingMode: "environment" },  // Menggunakan kamera belakang
-                            { fps: 10, qrbox: 250 },        // FPS dan ukuran box untuk pemindaian
-                            onScanSuccess,
-                            onScanFailure
-                        ).catch((err) => {
-                            console.error("Error starting QR scanner: " + err);
-                        });
-                    };
-                } catch (error) {
-                    console.error("Tidak dapat mengakses kamera. Periksa izin atau perangkat Anda.");
-                    alert("Tidak dapat mengakses kamera. Periksa izin atau perangkat Anda.");
-                }
-            }
-    
-            // Menjalankan fungsi startCamera setelah halaman dimuat sepenuhnya
-            window.onload = startCamera;
+    }
+
+    function error(err) {
+        console.error(err);
+        // Prints any errors to the console
+    }
+
+
         </script>
     </main>
         
