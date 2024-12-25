@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Push Notification Example</title>
+</head>
+<body>
+
+<button onclick="requestNotificationPermission()">Aktifkan Notifikasi</button>
+
+<script>
+function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        alert('Browser tidak mendukung notifikasi.');
+    } else if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then(function(permission) {
+            if (permission === 'granted') {
+                sendNotification();
+            }
+        });
+    } else {
+        sendNotification();
+    }
+}
+
+function sendNotification() {
+    var notification = new Notification('Notifikasi Masuk!', {
+        body: 'Ini adalah contoh notifikasi push.',
+        icon: 'https://i.pinimg.com/736x/08/6b/bf/086bbf6f067e2e453eb68679c5673310.jpg'
+    });
+}
+</script>
+
+</body>
+</html>
