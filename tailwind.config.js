@@ -4,7 +4,9 @@ module.exports = {
 
   content: [
     "./index.html",
-    "./point.html",   // Tambahkan file baru di sini jika perlu
+    "./point.html",
+    "./camera-qr.html",
+    "./camera-qr-copy.html",
     "./**/*.html",    // Ini akan mencakup semua file HTML di subfolder
   ],
   theme: {

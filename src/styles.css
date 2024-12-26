@@ -22,7 +22,12 @@ input:hover, input:focus{
     transition: all 150ms ease;
 }
 
-input[type="checkbox"]:hover{
+input[type="checkbox"]:hover, input[type="file"]:hover{
+    border: 0;
+    box-shadow: none;
+}
+
+input[type="file"]{
     border: 0;
     box-shadow: none;
 }
