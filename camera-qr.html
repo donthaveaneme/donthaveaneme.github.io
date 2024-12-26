@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>Member Point</title>
+    <title>Member Point - Scan</title>
     <link rel="manifest" href="/manifest.json">
 
 
@@ -32,7 +32,7 @@
 
             <div class="fixed w-full flex justify-center gap-2 px-2 bottom-28" id="toggleFileScan">
                 <button
-                    class="flex justify-center items-center rounded border w-5 h-14 border-[#E5398D] bg-[#E5398D] px-10 py-2 text-md font-medium text-white hover:bg-transparent hover:text-[#E5398D] focus:outline-none focus:ring active:text-[#E5398D]"
+                    class="inline-block shrink-0 rounded-md border border-[#E5398D] bg-[#E5398D] px-8 py-3 text-md font-bold text-white transition hover:bg-transparent hover:text-[#E5398D] focus:outline-none focus:ring active:text-[#E5398D]"
                     id="file-scan-trigger"
                     >
                     <i class="fas fa-folder-open text-lg"></i>
@@ -40,7 +40,7 @@
                 <input type="file" id="qr-input-file" accept="image/*" style="display: none;">
 
                 <button
-                    class="flex justify-center items-center rounded border w-2 border-[#E5398D] bg-[#E5398D] px-10 py-2 text-md font-medium text-white hover:bg-transparent hover:text-[#E5398D] focus:outline-none focus:ring active:text-[#E5398D]"
+                    class="inline-block shrink-0 rounded-md border border-[#E5398D] bg-[#E5398D] px-8 py-3 text-md font-bold text-white transition hover:bg-transparent hover:text-[#E5398D] focus:outline-none focus:ring active:text-[#E5398D]"
                     id="flash-trigger" style="display: none;"
                     >
                     <i class="fas fa-bolt text-lg"></i>
@@ -81,11 +81,12 @@
                 <i class="fas fa-qrcode text-3xl"></i>
             </a>
 
-            <a href="#" class="ml-8 w-[80px] bg-white text-gray-400 p-2 rounded-lg flex-row text-center">
+            <a href="/history.html" class="ml-8 w-[80px] bg-white text-gray-400 p-2 rounded-lg flex-row text-center">
                 <i class="fas fa-clock-rotate-left text-lg"></i>
                 <p class="text-sm font-sans font-medium truncate">Riwayat</p>
             </a>
-            <a href="#" class="mx-1 w-[80px] bg-white text-gray-400 p-2 rounded-lg flex-row text-center">
+
+            <a href="/settings.html" class="mx-1 w-[80px] bg-white text-gray-400 p-2 rounded-lg flex-row text-center">
                 <i class="fas fa-gear text-lg"></i>
                 <p class="text-sm font-sans font-medium truncate">Pengaturan</p>
             </a>
