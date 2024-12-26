@@ -2,8 +2,8 @@ const messageScan = document.getElementById('message-scan');
 const resultDiv = document.getElementById('result');
 const readerDiv = document.getElementById('reader');
 const toggleScanFile = document.getElementById('toggleFileScan');
-const toggleFlashCamera = document.getElementById('flash-trigger'); // Tombol untuk mengaktifkan/mematikan flash
-const cameraSelection = document.getElementById('cameraIdOption'); // Elemen select untuk memilih kamera
+const toggleFlashCamera = document.getElementById('flash-trigger'); // NONAKTIF
+const cameraSelection = document.getElementById('cameraIdOption');
 
 let html5QrCode;
 let currentCameraId = null;
@@ -43,6 +43,7 @@ Html5Qrcode.getCameras().then((devices) => {
 
         startScanWithCamera(currentCameraId);
 
+        /*
         if (html5QrCode.isTorchSupported()) {
             if (toggleFlashCamera) {
                 toggleFlashCamera.style.display = "block";
@@ -60,6 +61,7 @@ Html5Qrcode.getCameras().then((devices) => {
                 toggleFlashCamera.style.display = "none";
             }
         }
+            dinonaktifkan, sering bermasalah*/
     } else {
         console.warn("Tidak ada kamera yang tersedia.");
         alert("Tidak ada kamera yang terdeteksi. Pastikan perangkat Anda memiliki kamera dan izin akses sudah diberikan.");
