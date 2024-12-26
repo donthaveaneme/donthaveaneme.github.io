@@ -5,6 +5,8 @@ module.exports = {
   content: [
     "./index.html",
     "./point.html",
+    "./no-connection.html",
+    "./404.html",
     "./camera-qr.html",
     "./camera-qr-copy.html",
     "./**/*.html",    // Ini akan mencakup semua file HTML di subfolder
