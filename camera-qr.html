@@ -29,49 +29,38 @@
             <div id="reader" class="bg-white fixed top-0 w-full"></div>
             <div id="result" class="bg-green-500 text-white font-medium top-0 w-full h-full flex-col justify-center items-center" style="display: none;"></div>
 
+
+            <div class="fixed w-full flex justify-center gap-2 px-2 bottom-28" id="toggleFileScan">
+                <button
+                    class="flex justify-center items-center rounded border w-5 h-14 border-[#E5398D] bg-[#E5398D] px-10 py-2 text-md font-medium text-white hover:bg-transparent hover:text-[#E5398D] focus:outline-none focus:ring active:text-[#E5398D]"
+                    id="file-scan-trigger"
+                    >
+                    <i class="fas fa-folder-open text-lg"></i>
+                </button>
+                <input type="file" id="qr-input-file" accept="image/*" style="display: none;">
+
+                <button
+                    class="flex justify-center items-center rounded border w-2 border-[#E5398D] bg-[#E5398D] px-10 py-2 text-md font-medium text-white hover:bg-transparent hover:text-[#E5398D] focus:outline-none focus:ring active:text-[#E5398D]"
+                    id="flash-trigger" style="display: none;"
+                    >
+                    <i class="fas fa-bolt text-lg"></i>
+                </button>
+
+                <select
+                name="HeadlineAct"
+                id="cameraIdOption"
+                class="mt-1.5 w-20 h-12 rounded-lg border-gray-300 text-gray-700 sm:text-sm"
+                >
+              </select>
+            </div>
+
         </div>
     
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-        <script>
-
-const scanner = new Html5QrcodeScanner('reader', { 
-        // Scanner will be initialized in DOM inside element with id of 'reader'
-        qrbox: {
-            width: 250,
-            height: 250,
-        },  // Sets dimensions of scanning box (set relative to reader element width)
-        fps: 30, // Frames per second to attempt a scan
-    });
-
-
-    scanner.render(success, error);
-    // Starts scanner
-
-    function success(result) {
-        document.getElementById('result').style.display = "flex";
-        document.getElementById('result').innerHTML = `
-        <h2>Success!</h2>
-        <p><a href="${result}">${result}</a></p>
-        `;
-        // Prints result as a link inside result element
-
-        scanner.clear();
-        // Clears scanning instance
-
-        document.getElementById('reader').remove();
-        document.getElementById('message-scan').remove();
-        // Removes reader element from DOM since no longer needed
-    
-    }
-
-    function error(err) {
-        console.error(err);
-        // Prints any errors to the console
-    }
-
-
-        </script>
+        <script src="/camera-qr-config.js"></script>
+        
+        
+        
     </main>
         
     
