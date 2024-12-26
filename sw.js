@@ -1,4 +1,3 @@
-// sw.js
 const CACHE_NAME = "tailwind-pwa-cache-v1";
 const urlsToCache = [
   "/",
@@ -10,7 +9,6 @@ const urlsToCache = [
   "/icons/icon-512x512.png"
 ];
 
-// Install Service Worker
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -19,17 +17,29 @@ self.addEventListener("install", event => {
   );
 });
 
-// Fetch Resources
+self.addEventListener("activate", event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        return cachedResponse;  // Menggunakan cache jika ada
+        return cachedResponse;
       }
 
-      // Jika tidak ada di cache, ambil dari jaringan
       return fetch(event.request).catch(() => {
-        // Jika tidak ada koneksi, tampilkan halaman no-connection
         return caches.match("/no-connection.html");
       });
     })
