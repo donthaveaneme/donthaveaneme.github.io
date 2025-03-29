@@ -67,7 +67,7 @@ Html5Qrcode.getCameras().then(function(devices) {
             select.appendChild(option);
         });
 
-        let backCamera = devices.find(function(device) { device.label.toLowerCase().includes("back") }) || devices[0];            
+        let backCamera = devices.find(device => device.label.toLowerCase().includes("back")) || devices[0];      
 
         startScanner(backCamera.id);
 
