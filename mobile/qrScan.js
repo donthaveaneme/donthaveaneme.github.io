@@ -67,18 +67,25 @@ Html5Qrcode.getCameras().then(function(devices) {
             select.appendChild(option);
         });
 
-        let backCamera = devices.find(device => device.label.toLowerCase().includes("back")) || devices[0];      
+        let backCamera = devices.find(device => 
+            device.label.toLowerCase().includes("back") || 
+            device.label.toLowerCase().includes("rear")
+        ) || devices[0];
+        
 
         startScanner(backCamera.id);
 
         select.addEventListener('change', function() {
-            stopScanner();
-            html5QrCode.stop().then(function() {
+            if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+                html5QrCode.stop().then(function() {
+                    console.log("Scanner dihentikan. Mengganti ke kamera:", select.value);
+                    startScanner(select.value);
+                }).catch(function(err) { 
+                    console.error("Gagal mengganti kamera: ", err); 
+                });
+            } else {
                 startScanner(select.value);
-            }).catch(function(err) {
-                console.error("Gagal mengganti kamera: ", err)
-            });
-            
+            }        
         });
     } else {
         alert("⚠️ Tidak ada kamera yang terdeteksi. Pastikan izin kamera sudah diberikan!");
