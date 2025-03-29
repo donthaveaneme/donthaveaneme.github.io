@@ -1,15 +1,20 @@
 let html5QrCode = new Html5Qrcode("reader");
 let result = document.getElementById('result');
-let result2 = document.getElementById('result2');
+let messageScan = document.getElementById('messageScan');
+//let result2 = document.getElementById('result2');
 const select = document.getElementById('cameraSelect');
 const startButton = document.getElementById('startScan'); 
 const stopButton = document.getElementById('stopScan');
 const torchButton = document.getElementById("toggleTorch");
+const fileInputBtn = document.getElementById('fileInputBtn');
+const fileInput = document.getElementById('fileInput');
 const beepSound = new Audio("beep.mp3");
 beepSound.volume = 1;
 
+select.style.display = 'none';
 torchButton.style.display = "none";
-startButton.style.display = 'none';
+stopButton.style.display = 'none';
+fileInputBtn.style.display = 'none';
 
 let currentCameraId = null;
 let videoTrack = null;
@@ -25,24 +30,14 @@ function startScanner(cameraId) {
 
     navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraId } }).then(function(stream) {
         videoTrack = stream.getVideoTracks()[0];
-        const capabilities = videoTrack.getCapabilities();
 
-        if (capabilities.torch) {
+        if ('torch' in videoTrack.getSettings() || 'torch' in videoTrack.getCapabilities()) {
             torchButton.style.display = "block";
         } else {
             torchButton.style.display = "none";
         }
 
-        if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
-            html5QrCode.stop().then(function() {
-                console.log("Scanner dihentikan, memulai ulang dengan kamera:", cameraId);
-                scanWithCamera(cameraId);
-            }).catch(function(err) {
-                console.error("Gagal menghentikan scanner:", err);
-            });
-        } else {
-            scanWithCamera(cameraId);
-        }
+        scanWithCamera(cameraId);
     }).catch(err => console.error("Gagal mengakses kamera:", err));
 }
 
@@ -60,26 +55,52 @@ function scanWithCamera(cameraId) {
         beepSound.play().catch(function(err) { 
             console.error("Audio gagal diputar: ", err)
         });
-        result.innerText = decodedText;
-        console.log(decodedResult);
-        //html5QrCode.stop();
+        result.value = decodedText;
+        result.dispatchEvent(new Event("input"));
+        //console.log(decodedResult);
         }
     ).catch(function(err) { 
         console.error("Gagal memulai scanner: ", err)
     });
 }
 
-function stopScanner() {
-    if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
-        html5QrCode.stop().then(function() {
-            console.log("Scanner dihentikan.");
-        }).catch(err => {
-            console.error("Gagal menghentikan scanner:", err);
-        });
+function forceStopCamera() {
+    if (videoTrack) {
+        videoTrack.stop();
+        console.log("Track video berhasil dihentikan.");
+        videoTrack = null; // Hapus referensi agar bisa dipakai ulang
     } else {
-        console.log("Scanner tidak sedang berjalan.");
+        console.warn("Tidak ada track video yang aktif.");
     }
 }
+
+function stopScanner() {
+    return new Promise(function(resolve, reject) {
+        if (!html5QrCode || typeof html5QrCode.getState !== "function") {
+            console.log("Scanner tidak sedang berjalan.");
+            resolve();
+            return;
+        }
+        
+        if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+            html5QrCode.stop().then(function() {
+                    console.log("Scanner dihentikan.");
+                    forceStopCamera();
+                    resolve();
+                })
+                .catch(function(err) {
+                    console.error("Gagal menghentikan scanner:", err);
+                    forceStopCamera();
+                    reject(err);
+                });
+        } else {
+            console.log("Scanner tidak sedang berjalan.");
+            forceStopCamera();
+            resolve();
+        }
+    });
+}
+
 
 Html5Qrcode.getCameras().then(function(devices) {
     if (devices.length > 0) {
@@ -107,31 +128,54 @@ Html5Qrcode.getCameras().then(function(devices) {
 
         select.value = backCamera.id;
 
-        startScanner(backCamera.id);
-
         select.addEventListener('change', function() {
-            if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
-                html5QrCode.stop().then(function() {
-                    console.log("Scanner dihentikan. Mengganti ke kamera:", select.value);
-                    startScanner(select.value);
-                }).catch(function(err) { 
-                    console.error("Gagal mengganti kamera: ", err); 
-                });
-            } else {
-                startScanner(select.value);
-            }        
+            stopScanner();
+            startScanner(select.value);
         });
     } else {
-        alert("⚠️ Tidak ada kamera yang terdeteksi. Pastikan izin kamera sudah diberikan!");
-        result.innerText = "Tidak ada kamera yang terdeteksi.";
+        alert("⚠️ Tidak ada kamera yang terdeteksi.");
+        messageScan.innerText = "Tidak ada kamera yang terdeteksi.";
     }
 }).catch(function(err) {
     console.error("Tidak dapat mengambil daftar kamera: ", err);
-    alert("⚠️ Error mengakses kamera: " + err.message);
-    result.innerText = "<b>Error: Tidak dapat mengakses kamera.</b>";
+    messageScan.innerText = "Error: Tidak dapat mengakses kamera.";
     select.style.display = 'none';
     stopButton.style.display = 'none'
 });
+
+fileInputBtn.addEventListener("click", function() {
+    fileInput.click();
+});
+
+fileInput.addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        scanQRCodeFromFile(file);
+    }
+});
+
+function scanQRCodeFromFile(file) {
+    stopScanner().then(function() {
+        html5QrCode = new Html5Qrcode("reader"); 
+
+        html5QrCode.scanFile(file, true)
+            .then(function(decodedText)  {
+                beepSound.play().catch(function(err) { console.error("Audio gagal diputar: ", err) });
+                result.value = decodedText;
+                result.dispatchEvent(new Event("input"));
+
+                startButton.style.display = 'block';
+                stopButton.style.display = 'none';
+                fileInputBtn.style.display = 'none';
+            })
+            .catch(function(err) {
+                messageScan.innerText = `Gagal memindai kode QR: ${err}`;
+            });
+    }).catch(function(err) {
+        console.error("Gagal menghentikan scanner sebelum pemindaian file:", err);
+    });
+}
+
 
 function toggleTorch() {
     if (!videoTrack) {
@@ -149,22 +193,38 @@ function toggleTorch() {
     
     videoTrack.applyConstraints({
         advanced: [{ torch: isTorchOn }]
-    }).then(() => {
-        torchButton.innerText = isTorchOn ? "💡 Matikan Senter" : "🔦 Nyalakan Senter";
-    }).catch(err => console.error("Gagal mengaktifkan senter:", err));
-
+    }).then(function() {
+        if (isTorchOn) {
+            torchButton.innerText = "💡 Matikan Senter";
+        } else {
+            torchButton.innerText = "🔦 Nyalakan Senter";
+        }
+    }).catch(function(err) {
+        console.error("Gagal mengaktifkan senter:", err);
+    });    
 }
 
 stopButton.addEventListener('click', function() {
     stopScanner();
-    stopButton.style.display = 'none';
     startButton.style.display = 'block';
+    stopButton.style.display = 'none';
+    fileInputBtn.style.display = 'none';
+    select.style.display = 'none';
 });
 
 startButton.addEventListener('click', function() {
-    startScanner(select.value);
-    startButton.style.display = 'none';
-    stopButton.style.display = 'block';
+    stopScanner().then(function() {
+        if (!html5QrCode || typeof html5QrCode.getState !== "function") {
+            html5QrCode = new Html5Qrcode("reader");
+        }
+        startScanner(select.value);
+        startButton.style.display = 'none';
+        stopButton.style.display = 'block';
+        fileInputBtn.style.display = 'block';
+        select.style.display = 'block';
+    }).catch(function(err) {
+        console.error("Gagal memulai ulang scanner:", err);
+    });
 });
 
 torchButton.addEventListener("click", toggleTorch);
