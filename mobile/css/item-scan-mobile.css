@@ -1,0 +1,5 @@
+#reader {
+    width: 100%;        /* Gunakan 100% dari lebar layar */
+    max-width: 500px;   /* Jangan lebih dari 500px (opsional) */
+    margin: auto;       /* Posisikan di tengah */
+}
