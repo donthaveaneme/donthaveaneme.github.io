@@ -10,14 +10,18 @@ beepSound.volume = 1;
 
 torchButton.style.display = "none";
 startButton.style.display = 'none';
+
 let currentCameraId = null;
 let videoTrack = null;
+let isTorchOn = false;
 
 function startScanner(cameraId) {
     if (!cameraId) {
         console.error("ID kamera tidak valid!");
         return;
     }
+
+    currentCameraId = cameraId;
 
     navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraId } }).then(function(stream) {
         videoTrack = stream.getVideoTracks()[0];
@@ -130,16 +134,25 @@ Html5Qrcode.getCameras().then(function(devices) {
 });
 
 function toggleTorch() {
-    if (!currentCameraId) return;
+    if (!videoTrack) {
+        console.error("Tidak ada video track untuk mengontrol senter.");
+        return;
+    }
 
-    navigator.mediaDevices.getUserMedia({
-        video: { deviceId: currentCameraId, advanced: [{ torch: !isTorchOn }] }
-    }).then(stream => {
-        let track = stream.getVideoTracks()[0];
-        track.applyConstraints({ advanced: [{ torch: !isTorchOn }] });
-        isTorchOn = !isTorchOn;
+    const capabilities = videoTrack.getCapabilities();
+    if (!capabilities.torch) {
+        console.error("Perangkat ini tidak mendukung torch.");
+        return;
+    }
+
+    isTorchOn = !isTorchOn;
+    
+    videoTrack.applyConstraints({
+        advanced: [{ torch: isTorchOn }]
+    }).then(() => {
         torchButton.innerText = isTorchOn ? "💡 Matikan Senter" : "🔦 Nyalakan Senter";
-    }).catch(err => console.error("Torch tidak didukung:", err));
+    }).catch(err => console.error("Gagal mengaktifkan senter:", err));
+
 }
 
 stopButton.addEventListener('click', function() {
