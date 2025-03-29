@@ -9,14 +9,25 @@
     <link rel="stylesheet" href="css/item-scan-mobile.css">
 </head>
 <body>
-    <div id="reader"></div>
-    <select id="cameraSelect"></select>
-    <p>Hasil Scan: <span id="result"></span></p>
-    <p id="result2"></p>
+    <main>
+        <div id="reader"></div>
+        <select id="cameraSelect"></select>
 
-    <button id="stopScan">Stop Scan</button>
-    <button id="startScan">Start Scan</button>
-    <button id="toggleTorch">🔦 Nyalakan Senter</button>
+        <div class="scan-button">
+            <button id="stopScan" type="button" style="color: var(--warn-bg);">Stop scan</button>
+            <button id="startScan" type="button">Scan Barang</button>
+            <button id="toggleTorch" type="button">🔦 Nyalakan Senter</button>
+            <button id="fileInputBtn" type="button"s>Upload File</button>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </div>
+
+        <p id="messageScan"></p>
+        <input type="text" id="result" value="">
+
+        <p id="post"></p>
+    </main>
+
     <script src="qrScan.js"></script>
+    <script src="dataInputFinder.js"></script>
 </body>
 </html>
