@@ -4,10 +4,14 @@ let result2 = document.getElementById('result2');
 const select = document.getElementById('cameraSelect');
 const startButton = document.getElementById('startScan'); 
 const stopButton = document.getElementById('stopScan');
+const torchButton = document.getElementById("toggleTorch");
 const beepSound = new Audio("beep.mp3");
 beepSound.volume = 1;
 
+torchButton.style.display = "none";
 startButton.style.display = 'none';
+let currentCameraId = null;
+let videoTrack = null;
 
 function startScanner(cameraId) {
     if (!cameraId) {
@@ -15,20 +19,35 @@ function startScanner(cameraId) {
         return;
     }
 
-    if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
-        html5QrCode.stop().then(function() {
-            console.log("Scanner dihentikan, memulai ulang dengan kamera:", cameraId);
+    navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraId } }).then(function(stream) {
+        videoTrack = stream.getVideoTracks()[0];
+        const capabilities = videoTrack.getCapabilities();
+
+        if (capabilities.torch) {
+            torchButton.style.display = "block";
+        } else {
+            torchButton.style.display = "none";
+        }
+
+        if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+            html5QrCode.stop().then(function() {
+                console.log("Scanner dihentikan, memulai ulang dengan kamera:", cameraId);
+                scanWithCamera(cameraId);
+            }).catch(function(err) {
+                console.error("Gagal menghentikan scanner:", err);
+            });
+        } else {
             scanWithCamera(cameraId);
-        }).catch(function(err) {
-            console.error("Gagal menghentikan scanner:", err);
-        });
-    } else {
-        scanWithCamera(cameraId);
-    }
+        }
+    }).catch(err => console.error("Gagal mengakses kamera:", err));
 }
 
 function scanWithCamera(cameraId) {
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    const config = { 
+        fps: 10, 
+        qrbox: { width: 250, height: 250 },
+        showTorchButtonIfSupported: false //tidak tampilin tombol bawaan
+    };
 
     html5QrCode.start(
         cameraId, 
@@ -110,6 +129,19 @@ Html5Qrcode.getCameras().then(function(devices) {
     stopButton.style.display = 'none'
 });
 
+function toggleTorch() {
+    if (!currentCameraId) return;
+
+    navigator.mediaDevices.getUserMedia({
+        video: { deviceId: currentCameraId, advanced: [{ torch: !isTorchOn }] }
+    }).then(stream => {
+        let track = stream.getVideoTracks()[0];
+        track.applyConstraints({ advanced: [{ torch: !isTorchOn }] });
+        isTorchOn = !isTorchOn;
+        torchButton.innerText = isTorchOn ? "💡 Matikan Senter" : "🔦 Nyalakan Senter";
+    }).catch(err => console.error("Torch tidak didukung:", err));
+}
+
 stopButton.addEventListener('click', function() {
     stopScanner();
     stopButton.style.display = 'none';
@@ -121,3 +153,5 @@ startButton.addEventListener('click', function() {
     startButton.style.display = 'none';
     stopButton.style.display = 'block';
 });
+
+torchButton.addEventListener("click", toggleTorch);
