@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (keyword !== "") {
             let xhr = new XMLHttpRequest();
-            xhr.open("GET", "http://inababykids.my.id/logic/search.php?search=" + encodeURIComponent(keyword), true);
+            xhr.open("GET", "https://cors-anywhere.herokuapp.com/http://inababykids.my.id/logic/search.php?search=" + encodeURIComponent(keyword), true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let data = JSON.parse(xhr.responseText);
